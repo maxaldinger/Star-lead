@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 const STARDOG_CONTEXT = `== YOUR COMPANY CONTEXT ==
 Company: Stardog
 Description: Stardog is the leading Enterprise Knowledge Graph platform. It connects, unifies, and queries data across enterprise systems without migration using virtual graph technology.
@@ -21,17 +19,32 @@ Common Objections: "We have a data warehouse" → Stardog layers on top. "Graph 
 
 export async function POST(request: Request) {
   try {
-    const { notes, products, dealName } = await request.json();
+    if (!process.env.ANTHROPIC_API_KEY) {
+      console.error('[proposal] Missing ANTHROPIC_API_KEY');
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    }
+
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+    let body: any;
+    try {
+      body = await request.json();
+    } catch (parseErr: any) {
+      console.error('[proposal] Request body parse error:', parseErr.message);
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
+
+    const { notes, products, dealName } = body;
 
     if (!notes) {
       return NextResponse.json({ error: 'notes is required' }, { status: 400 });
     }
 
-    const systemPrompt = `You are an expert enterprise sales proposal writer. You create compelling, professional proposals that clearly articulate business value and drive deals to close. Your proposals are structured, persuasive, and tailored to the prospect's specific challenges.
+    const systemPrompt = `You are an expert enterprise sales proposal writer for Stardog. You create compelling, professional proposals that clearly articulate business value and drive deals to close.
 
 ${STARDOG_CONTEXT}
 
-You MUST respond with valid JSON only, no markdown formatting, no explanation outside the JSON. Use this exact structure:
+Return ONLY valid JSON with no markdown fences, no backticks, no preamble. Use this exact structure:
 {
   "title": "string (proposal title including prospect company name if available)",
   "date": "string (today's date formatted nicely)",
@@ -47,27 +60,62 @@ You MUST respond with valid JSON only, no markdown formatting, no explanation ou
       ? `\n\nProducts to include in the proposal: ${products.join(', ')}`
       : '';
 
-    const response = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 4096,
-      system: systemPrompt,
-      messages: [
-        {
-          role: 'user',
-          content: `Generate a professional sales proposal${dealName ? ` for the "${dealName}" deal` : ''} based on these notes:\n\n${notes}${productsText}`,
-        },
-      ],
-    });
+    console.log('[proposal] Calling Claude for deal:', dealName || '(unnamed)');
+
+    let response;
+    try {
+      response = await client.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 4096,
+        system: systemPrompt,
+        messages: [
+          {
+            role: 'user',
+            content: `Generate a professional sales proposal${dealName ? ` for the "${dealName}" deal` : ''} based on these notes:\n\n${notes}${productsText}`,
+          },
+        ],
+      });
+    } catch (claudeErr: any) {
+      console.error('[proposal] Claude API error:', claudeErr.message, claudeErr.status);
+      return NextResponse.json({ error: 'AI generation failed: ' + (claudeErr.message || 'unknown error') }, { status: 502 });
+    }
 
     const textBlock = response.content.find((block) => block.type === 'text');
-    const raw = textBlock ? textBlock.text : '{}';
-    const cleaned = raw.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(cleaned);
+    const raw = textBlock ? textBlock.text : '';
+    console.log('[proposal] Claude response length:', raw.length, 'chars');
 
+    if (!raw) {
+      console.error('[proposal] Empty response from Claude');
+      return NextResponse.json({ error: 'Empty response from AI' }, { status: 502 });
+    }
+
+    // Strip markdown fences and find JSON
+    let json = raw;
+    const fenceMatch = json.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (fenceMatch) json = fenceMatch[1];
+    json = json.trim();
+    if (!json.startsWith('{')) {
+      const objStart = json.indexOf('{');
+      if (objStart >= 0) json = json.slice(objStart);
+    }
+    // Repair truncated JSON
+    if (!json.endsWith('}')) {
+      const lastBrace = json.lastIndexOf('}');
+      if (lastBrace > 0) json = json.slice(0, lastBrace + 1);
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(json);
+    } catch (jsonErr: any) {
+      console.error('[proposal] JSON parse error:', jsonErr.message, 'Raw (first 500):', raw.slice(0, 500));
+      return NextResponse.json({ error: 'Failed to parse AI response' }, { status: 502 });
+    }
+
+    console.log('[proposal] Success, title:', parsed.title || 'N/A');
     return NextResponse.json(parsed);
-  } catch (error: unknown) {
-    console.error('sa-proposal error:', error);
-    const errMsg = error instanceof Error ? error.message : 'Internal server error';
-    return NextResponse.json({ error: errMsg }, { status: 500 });
+  } catch (outerErr: any) {
+    console.error('[proposal] Unhandled error:', outerErr.message, outerErr.stack);
+    return NextResponse.json({ error: outerErr.message || 'Internal server error' }, { status: 500 });
   }
 }

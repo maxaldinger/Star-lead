@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react'
 import { Copy, Check, ArrowDownNarrowWide, RefreshCw } from 'lucide-react'
 import SAInputBar, { type Tool, type Tone, type Methodology } from './sa-input-bar'
 import SALouBuilder from './sa-lou-builder'
-import SAPricebookBuilder from './sa-pricebook-builder'
 import SAThreadingBuilder from './sa-threading-builder'
 import SAProposalBuilder from './sa-proposal-builder'
 import SAProductFitBuilder from './sa-product-fit-builder'
@@ -41,7 +40,6 @@ const TOOL_COLORS: Record<string, string> = {
   email: '#10B981',
   lou: '#3B82F6',
   fit: '#06B6D4',
-  pricebook: '#F59E0B',
   objections: '#EF4444',
   threading: '#8B5CF6',
   proposal: '#EC4899',
@@ -53,7 +51,6 @@ const TOOL_LABELS: Record<string, string> = {
   email: 'Email',
   lou: 'LOU',
   fit: 'Product Fit',
-  pricebook: 'Pricebook',
   objections: 'Objections',
   threading: 'Threading',
   proposal: 'Proposal',
@@ -62,7 +59,7 @@ const TOOL_LABELS: Record<string, string> = {
 
 /* Chat-based tools render the message view; builder tools render their builder */
 const CHAT_TOOLS: Tool[] = ['email', 'objections', 'general']
-const BUILDER_TOOLS: Tool[] = ['lou', 'pricebook', 'threading', 'proposal', 'fit', 'deck']
+const BUILDER_TOOLS: Tool[] = ['lou', 'threading', 'proposal', 'fit', 'deck']
 
 /* ── Component ──────────────────────────────────────────── */
 
@@ -186,7 +183,6 @@ export default function SalesAssist() {
       <div className="flex flex-col h-full">
         <div className="flex-1 overflow-y-auto">
           {activeTool === 'lou' && <SALouBuilder {...builderProps} />}
-          {activeTool === 'pricebook' && <SAPricebookBuilder {...builderProps} />}
           {activeTool === 'threading' && <SAThreadingBuilder {...builderProps} />}
           {activeTool === 'proposal' && <SAProposalBuilder {...builderProps} />}
           {activeTool === 'fit' && <SAProductFitBuilder {...builderProps} />}

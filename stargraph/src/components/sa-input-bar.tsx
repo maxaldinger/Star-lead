@@ -9,7 +9,6 @@ import DescriptionSelect from './sa-description-select'
 export type Tool =
   | 'email'
   | 'lou'
-  | 'pricebook'
   | 'objections'
   | 'threading'
   | 'proposal'
@@ -42,7 +41,6 @@ const TOOLS: { id: Tool; label: string; color: string }[] = [
   { id: 'email', label: 'Email', color: '#10B981' },
   { id: 'lou', label: 'LOU', color: '#3B82F6' },
   { id: 'fit', label: 'Product Fit', color: '#06B6D4' },
-  { id: 'pricebook', label: 'Pricebook', color: '#F59E0B' },
   { id: 'objections', label: 'Objections', color: '#EF4444' },
   { id: 'threading', label: 'Threading', color: '#8B5CF6' },
   { id: 'proposal', label: 'Proposal', color: '#EC4899' },

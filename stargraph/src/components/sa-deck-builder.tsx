@@ -42,14 +42,11 @@ export default function SaDeckBuilder({ dealName }: Props) {
 Deck type: ${deckType}
 Context/notes: ${notes || 'No additional notes provided.'}
 
-Create 8-12 slides. For each slide provide:
-1. A clear slide title
-2. The slide content (use bullet points, keep concise, presentation-style)
-3. Speaker notes (talking points for the presenter)
+Create 8-12 slides. For each slide provide a title, content (bullet points, concise, presentation-style), and speaker_notes (talking points for the presenter).
 
-Return as JSON array: [{ "title": "...", "content": "...", "speaker_notes": "..." }]
+CRITICAL: Return ONLY a raw JSON array. No markdown fences. No backticks. No preamble text. No explanation. Start your response with [ and end with ].
 
-Only return the JSON array, no other text.`
+Format: [{"title":"...","content":"...","speaker_notes":"..."}]`
 
       const r = await fetch('/api/sa-chat', {
         method: 'POST',
@@ -62,11 +59,20 @@ Only return the JSON array, no other text.`
       const d = await r.json()
       if (!r.ok) throw new Error(d.error || 'Failed to generate deck')
 
-      const content = d.response || d.message || ''
-      const jsonMatch = content.match(/\[[\s\S]*\]/)
-      if (!jsonMatch) throw new Error('Could not parse slide data from response')
+      let content = d.message || d.response || ''
+      // Strip markdown fences if present
+      const fenceMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/)
+      if (fenceMatch) content = fenceMatch[1]
+      content = content.trim()
+      // Find the JSON array in the response
+      const arrStart = content.indexOf('[')
+      const arrEnd = content.lastIndexOf(']')
+      if (arrStart === -1 || arrEnd === -1 || arrEnd <= arrStart) {
+        throw new Error('Could not find slide array in response')
+      }
+      const jsonStr = content.slice(arrStart, arrEnd + 1)
 
-      const parsed = JSON.parse(jsonMatch[0])
+      const parsed = JSON.parse(jsonStr)
       setSlides(
         parsed.map((s: any) => ({
           title: s.title || '',

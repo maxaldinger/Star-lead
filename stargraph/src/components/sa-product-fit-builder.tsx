@@ -95,7 +95,7 @@ export default function SaProductFitBuilder({ dealName }: Props) {
       <div>
         <h2 className="text-xl font-bold text-white mb-1">Product Fit Analysis</h2>
         <p className="text-sm text-slate-400">
-          Analyze meeting notes to assess product fit, identify gaps, and surface red flags.
+          Analyze meeting notes across Knowledge Graph Fit, Data Silo Impact, Semantic Layer Value, Compliance & Governance, AI Grounding Benefit, and Competitive Displacement.
         </p>
       </div>
 

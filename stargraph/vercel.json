@@ -1,7 +1,7 @@
 {
   "functions": {
-    "src/app/api/feed/route.ts": { "maxDuration": 60 },
-    "src/app/api/analyze/route.ts": { "maxDuration": 60 },
-    "src/app/api/meddpicc/route.ts": { "maxDuration": 30 }
+    "stargraph/src/app/api/feed/route.ts": { "maxDuration": 60 },
+    "stargraph/src/app/api/analyze/route.ts": { "maxDuration": 60 },
+    "stargraph/src/app/api/meddpicc/route.ts": { "maxDuration": 30 }
   }
 }

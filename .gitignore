@@ -1,0 +1,9 @@
+﻿node_modules/
+stargraph/node_modules/
+.next/
+stargraph/.next/
+.env.local
+.env*
+env.local.txt
+Quantum lead/
+repkit/

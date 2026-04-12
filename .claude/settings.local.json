@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(curl -s \"https://news.google.com/rss/search?q=financial+services+data+integration+AI+governance&hl=en-US&gl=US&ceid=US:en\")",
+      "Bash(ls \"C:/Users/Max/Desktop/Star lead/stargraph/src/app/api/sa-\"*)",
+      "Bash(ls \"C:/Users/Max/Desktop/Star lead/stargraph/src/components/sa-\"*)",
+      "Bash(ls -la \"C:/Users/Max/Desktop/Star lead/stargraph/src/components/sa-\"*.tsx \"C:/Users/Max/Desktop/Star lead/stargraph/src/components/sales-assist.tsx\")",
+      "Bash(ls -la \"C:/Users/Max/Desktop/Star lead/stargraph/src/components/sa-\"*.tsx)",
+      "Bash(npx next:*)",
+      "Bash(npm install:*)"
+    ]
+  }
+}

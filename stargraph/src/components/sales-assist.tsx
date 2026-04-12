@@ -181,6 +181,21 @@ export default function SalesAssist() {
 
     return (
       <div className="flex flex-col h-full">
+        {/* Top pill bar */}
+        <div className="flex-shrink-0">
+          <SAInputBar
+            onSend={sendMessage}
+            onToolChange={handleToolChange}
+            activeTool={activeTool}
+            disabled={loading}
+            tone={tone}
+            methodology={methodology}
+            onToneChange={setTone}
+            onMethodologyChange={setMethodology}
+            hideTextarea
+          />
+        </div>
+
         <div className="flex-1 overflow-y-auto">
           {activeTool === 'lou' && <SALouBuilder {...builderProps} />}
           {activeTool === 'threading' && <SAThreadingBuilder {...builderProps} />}
@@ -189,6 +204,7 @@ export default function SalesAssist() {
           {activeTool === 'deck' && <SADeckBuilder {...builderProps} />}
         </div>
 
+        {/* Bottom pill bar */}
         <div className="flex-shrink-0">
           <SAInputBar
             onSend={sendMessage}
@@ -211,6 +227,21 @@ export default function SalesAssist() {
 
   return (
     <div className="flex flex-col h-full">
+      {/* Top pill bar */}
+      <div className="flex-shrink-0">
+        <SAInputBar
+          onSend={sendMessage}
+          onToolChange={handleToolChange}
+          activeTool={activeTool}
+          disabled={loading}
+          tone={tone}
+          methodology={methodology}
+          onToneChange={setTone}
+          onMethodologyChange={setMethodology}
+          hideTextarea
+        />
+      </div>
+
       {/* Messages area */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
         {showWelcome ? (

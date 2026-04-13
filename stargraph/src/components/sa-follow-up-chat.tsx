@@ -138,8 +138,8 @@ export default function SAFollowUpChat({ tool, dealName, contextSummary, placeho
             type="button"
             onClick={sendMessage}
             disabled={!input.trim() || loading}
-            className="flex items-center justify-center w-9 h-9 rounded-lg bg-cyan-500
-                       text-white hover:bg-cyan-400 disabled:opacity-40 disabled:cursor-not-allowed
+            className="flex items-center justify-center w-9 h-9 rounded-lg bg-sherpa
+                       text-white hover:bg-[#005068] disabled:opacity-40 disabled:cursor-not-allowed
                        transition-colors cursor-pointer"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Radio, MessageSquare, Map, Network, Shield, ShieldCheck } from 'lucide-react'
 import SignalFeed from '@/components/signal-feed'
 import SalesAssist from '@/components/sales-assist'
@@ -35,15 +36,22 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[#0a0e1a] text-white">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0e1a]/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 border-b border-sherpa bg-[#111827]/95 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center">
-              <Network className="w-5 h-5 text-white" />
-            </div>
+          <div className="flex items-center gap-4">
+            <Image
+              src="/stardog-logo.svg"
+              alt="Stardog"
+              width={72}
+              height={72}
+              className="opacity-70 flex-shrink-0"
+            />
             <div>
-              <h1 className="text-lg font-bold tracking-tight">StarGraph Intel</h1>
-              <p className="text-xs text-slate-400">Stardog Enterprise Intelligence Platform</p>
+              <h1 className="text-lg font-bold tracking-tight">Stardog Selling Intelligence</h1>
+              <p className="text-xs text-slate-400">Stardog Territory Intelligence</p>
+              <span className="inline-block mt-1 px-2 py-0.5 text-[9px] font-medium tracking-wide uppercase text-teal-300/80 border border-teal-400/20 rounded-full">
+                Built exclusively for Stardog
+              </span>
             </div>
           </div>
 
@@ -82,7 +90,7 @@ export default function Dashboard() {
                   tab === id
                     ? id === 'graph'
                       ? 'border-violet-400 text-violet-300'
-                      : 'border-cyan-400 text-white'
+                      : 'border-sherpa text-white'
                     : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-600'
                 }`}
               >
@@ -101,6 +109,13 @@ export default function Dashboard() {
         {tab === 'territory' && <TerritoryPlan />}
         {tab === 'graph' && admin && <KnowledgeGraph />}
       </main>
+
+      {/* Footer */}
+      <footer className="max-w-7xl mx-auto px-6 pb-6 pt-2">
+        <p className="text-center text-[11px] text-slate-600">
+          Prepared by Max Aldinger for Stardog &middot; April 2026
+        </p>
+      </footer>
     </div>
   )
 }

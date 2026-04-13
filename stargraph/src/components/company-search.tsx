@@ -81,7 +81,7 @@ export default function CompanySearch() {
         <button
           onClick={search}
           disabled={loading || !query.trim()}
-          className="px-6 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-medium text-sm hover:from-cyan-500 hover:to-cyan-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 rounded-xl bg-sherpa text-white font-medium text-sm hover:bg-[#005068] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Analyze'}
         </button>

@@ -9,7 +9,8 @@
       "Bash(ls -la \"C:/Users/Max/Desktop/Star lead/stargraph/src/components/sa-\"*.tsx \"C:/Users/Max/Desktop/Star lead/stargraph/src/components/sales-assist.tsx\")",
       "Bash(ls -la \"C:/Users/Max/Desktop/Star lead/stargraph/src/components/sa-\"*.tsx)",
       "Bash(npx next:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:www.stardog.com)"
     ]
   }
 }

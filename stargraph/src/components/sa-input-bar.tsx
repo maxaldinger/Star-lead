@@ -230,8 +230,8 @@ export default function SAInputBar({
           type="button"
           onClick={handleSend}
           disabled={!text.trim() || disabled}
-          className="flex items-center justify-center w-9 h-9 rounded-lg bg-cyan-500 text-white
-                     hover:bg-cyan-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors
+          className="flex items-center justify-center w-9 h-9 rounded-lg bg-sherpa text-white
+                     hover:bg-[#005068] disabled:opacity-40 disabled:cursor-not-allowed transition-colors
                      cursor-pointer"
         >
           <Send className="w-4 h-4" />

@@ -145,7 +145,7 @@ export default function KnowledgeGraph() {
       <div>
         <h2 className="text-xl font-bold text-white mb-1">Platform Knowledge Graph</h2>
         <p className="text-sm text-slate-400">
-          Code architecture of StarGraph Intel rendered as an interactive knowledge graph &mdash; real components, actual data operations, true system topology
+          Code architecture of Stardog Selling Intelligence rendered as an interactive knowledge graph &mdash; real components, actual data operations, true system topology
         </p>
       </div>
 

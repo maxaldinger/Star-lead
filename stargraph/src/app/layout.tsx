@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'StarGraph Intel',
-  description: 'Stardog Enterprise Account Intelligence Platform',
+  title: 'Stardog Territory Intelligence | Stardog Selling Intelligence',
+  description: 'Stardog Territory Intelligence',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

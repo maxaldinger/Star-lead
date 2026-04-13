@@ -13,7 +13,7 @@ interface LouRow {
   timeframe: string
 }
 
-const CATEGORIES = ['', 'Design', 'Data Management', 'Analysis', 'Manufacturing', 'Company']
+const CATEGORIES = ['', 'Data Integration', 'AI Readiness', 'Compliance / Governance', 'Infrastructure', 'Business Intelligence']
 const PRIORITIES = ['', 'High', 'Medium', 'Low']
 const TIMEFRAMES = ['', 'Q1', 'Q2', 'Q3', 'Q4']
 

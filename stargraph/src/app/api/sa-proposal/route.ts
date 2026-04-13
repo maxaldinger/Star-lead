@@ -48,16 +48,21 @@ Return ONLY valid JSON with no markdown fences, no backticks, no preamble. Use t
 {
   "title": "string (proposal title including prospect company name if available)",
   "date": "string (today's date formatted nicely)",
-  "executiveSummary": "string (2-3 paragraph executive summary of the proposal)",
-  "businessChallenges": ["string array of 3-5 key business challenges identified"],
-  "recommendedSolution": "string (detailed description of the recommended Stardog solution, referencing specific products)",
-  "whyUs": ["string array of 4-6 compelling reasons to choose Stardog over alternatives"],
-  "nextSteps": ["string array of 3-5 concrete next steps with owners and timeframes"],
-  "closingStatement": "string (1-2 paragraph compelling closing statement)"
-}`;
+  "executive_summary": "string (2-3 paragraph executive summary of the proposal)",
+  "business_challenges": [
+    { "challenge": "string (challenge title)", "detail": "string (1-2 sentence explanation)" }
+  ],
+  "recommended_solution": "string (detailed description of the recommended Stardog solution, referencing specific products)",
+  "why_us": "string (compelling paragraph on why Stardog is the best choice over alternatives)",
+  "next_steps": [
+    { "step": "string (step title)", "description": "string (owner and timeframe)" }
+  ],
+  "closing_statement": "string (1-2 paragraph compelling closing statement)"
+}
+Provide 3-5 business_challenges and 3-5 next_steps.`;
 
-    const productsText = products && products.length > 0
-      ? `\n\nProducts to include in the proposal: ${products.join(', ')}`
+    const productsText = products && typeof products === 'string' && products.trim().length > 0
+      ? `\n\nProducts to include in the proposal: ${products.trim()}`
       : '';
 
     console.log('[proposal] Calling Claude for deal:', dealName || '(unnamed)');
@@ -113,7 +118,7 @@ Return ONLY valid JSON with no markdown fences, no backticks, no preamble. Use t
     }
 
     console.log('[proposal] Success, title:', parsed.title || 'N/A');
-    return NextResponse.json(parsed);
+    return NextResponse.json({ proposal: parsed });
   } catch (outerErr: any) {
     console.error('[proposal] Unhandled error:', outerErr.message, outerErr.stack);
     return NextResponse.json({ error: outerErr.message || 'Internal server error' }, { status: 500 });

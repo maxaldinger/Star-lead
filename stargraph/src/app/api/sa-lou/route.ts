@@ -46,7 +46,7 @@ You MUST respond with valid JSON only, no markdown formatting, no explanation ou
     {
       "issue": "string (the pain point or issue identified)",
       "response": "string (proposed solution referencing Stardog capabilities)",
-      "category": "Design | Data Management | Analysis | Manufacturing | Company",
+      "category": "Data Integration | AI Readiness | Compliance / Governance | Infrastructure | Business Intelligence",
       "priority": "High | Medium | Low",
       "timeframe": "string (estimated timeframe to address, e.g. 'Phase 1 - 30 days')"
     }

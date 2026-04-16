@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 const STARDOG_CONTEXT = `== YOUR COMPANY CONTEXT ==
 Company: Stardog
 Description: Stardog is the leading Enterprise Knowledge Graph platform. It connects, unifies, and queries data across enterprise systems without migration using virtual graph technology.
@@ -25,6 +23,7 @@ const TOOL_PROMPTS: Record<string, string> = {
   pricebook: 'You are a pricing proposals expert. You help sales reps construct compelling pricing proposals that clearly communicate value, justify investment, and structure deals in a way that accelerates close. You understand enterprise software pricing models, discounting strategies, and how to present ROI.',
   objections: 'You are an objection handling expert. You use the Validate → Reframe → Proof → Close framework. First, you validate the prospect\'s concern to show empathy. Then you reframe the objection to shift perspective. Next you provide proof through data, case studies, or social proof. Finally you close by asking a question that moves the deal forward.',
   threading: 'You are a multi-threading strategy expert. You help sales reps identify and engage multiple stakeholders within a target account to build consensus and reduce single-thread risk. You understand organizational dynamics, buying committees, and how to map influence across enterprise deals.',
+  meddpicc: 'You are an expert MEDDPICC deal qualification coach. You help sales reps strengthen their deal qualification across all 8 MEDDPICC dimensions: Metrics, Economic Buyer, Decision Criteria, Decision Process, Paper Process, Implicate the Pain, Champion, and Competition. You give specific, actionable advice on closing gaps and advancing deals.',
   general: 'You are an AI sales engineer and coach. You help sales reps with any aspect of the sales process including discovery, qualification, demos, proposals, negotiations, and closing. You provide strategic advice, tactical guidance, and help reps think through complex deal dynamics.',
 };
 
@@ -44,7 +43,22 @@ const METHODOLOGY_PROMPTS: Record<string, string> = {
 
 export async function POST(request: Request) {
   try {
-    const { messages, tool, toneOverride, methodologyOverride } = await request.json();
+    if (!process.env.ANTHROPIC_API_KEY) {
+      console.error('[sa-chat] Missing ANTHROPIC_API_KEY');
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    }
+
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+    let body: any;
+    try {
+      body = await request.json();
+    } catch (parseErr: any) {
+      console.error('[sa-chat] Request body parse error:', parseErr.message);
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
+
+    const { messages, tool, toneOverride, methodologyOverride } = body;
 
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json({ error: 'messages array is required' }, { status: 400 });
@@ -65,22 +79,31 @@ export async function POST(request: Request) {
 
     systemPrompt += `Use the following company context to inform your responses. Always position this company's products and capabilities when relevant.\n\n${STARDOG_CONTEXT}`;
 
-    const response = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 2000,
-      system: systemPrompt,
-      messages: messages.map((m: { role: string; content: string }) => ({
-        role: m.role as 'user' | 'assistant',
-        content: m.content,
-      })),
-    });
+    console.log('[sa-chat] Calling Claude for tool:', toolKey, 'messages:', messages.length);
+
+    let response;
+    try {
+      response = await client.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 2000,
+        system: systemPrompt,
+        messages: messages.map((m: { role: string; content: string }) => ({
+          role: m.role as 'user' | 'assistant',
+          content: m.content,
+        })),
+      });
+    } catch (claudeErr: any) {
+      console.error('[sa-chat] Claude API error:', claudeErr.message, claudeErr.status);
+      return NextResponse.json({ error: 'AI generation failed: ' + (claudeErr.message || 'unknown error') }, { status: 502 });
+    }
 
     const textBlock = response.content.find((block) => block.type === 'text');
     const message = textBlock ? textBlock.text : '';
 
+    console.log('[sa-chat] Success, response length:', message.length);
     return NextResponse.json({ message });
   } catch (error: unknown) {
-    console.error('sa-chat error:', error);
+    console.error('[sa-chat] Unhandled error:', error);
     const errMsg = error instanceof Error ? error.message : 'Internal server error';
     return NextResponse.json({ error: errMsg }, { status: 500 });
   }

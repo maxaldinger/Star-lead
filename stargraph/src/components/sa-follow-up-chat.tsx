@@ -11,11 +11,11 @@ interface Message {
 interface Props {
   tool: string
   dealName: string | null
-  contextSummary: string
+  context: string
   placeholder?: string
 }
 
-export default function SAFollowUpChat({ tool, dealName, contextSummary, placeholder }: Props) {
+export default function SAFollowUpChat({ tool, dealName, context, placeholder }: Props) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -44,13 +44,13 @@ export default function SAFollowUpChat({ tool, dealName, contextSummary, placeho
       let apiMessages: Message[]
       if (messages.length === 0) {
         apiMessages = [
-          { role: 'user', content: contextSummary },
+          { role: 'user', content: context },
           { role: 'assistant', content: 'Understood. I have the full context for this builder. How can I help you refine it?' },
           userMsg,
         ]
       } else {
         apiMessages = [
-          { role: 'user', content: contextSummary },
+          { role: 'user', content: context },
           { role: 'assistant', content: 'Understood. I have the full context for this builder. How can I help you refine it?' },
           ...updated,
         ]

@@ -8,6 +8,7 @@ import SAThreadingBuilder from './sa-threading-builder'
 import SAProposalBuilder from './sa-proposal-builder'
 import SAProductFitBuilder from './sa-product-fit-builder'
 import SADeckBuilder from './sa-deck-builder'
+import SAMeddpiccBuilder from './sa-meddpicc-builder'
 
 /* ── Types ──────────────────────────────────────────────── */
 
@@ -44,6 +45,7 @@ const TOOL_COLORS: Record<string, string> = {
   threading: '#8B5CF6',
   proposal: '#EC4899',
   deck: '#7C3AED',
+  meddpicc: '#F59E0B',
 }
 
 const TOOL_LABELS: Record<string, string> = {
@@ -55,11 +57,12 @@ const TOOL_LABELS: Record<string, string> = {
   threading: 'Threading',
   proposal: 'Proposal',
   deck: 'Deck',
+  meddpicc: 'MEDDPICC',
 }
 
 /* Chat-based tools render the message view; builder tools render their builder */
 const CHAT_TOOLS: Tool[] = ['email', 'objections', 'general']
-const BUILDER_TOOLS: Tool[] = ['lou', 'threading', 'proposal', 'fit', 'deck']
+const BUILDER_TOOLS: Tool[] = ['lou', 'threading', 'proposal', 'fit', 'deck', 'meddpicc']
 
 /* ── Component ──────────────────────────────────────────── */
 
@@ -202,6 +205,7 @@ export default function SalesAssist() {
           {activeTool === 'proposal' && <SAProposalBuilder {...builderProps} />}
           {activeTool === 'fit' && <SAProductFitBuilder {...builderProps} />}
           {activeTool === 'deck' && <SADeckBuilder {...builderProps} />}
+          {activeTool === 'meddpicc' && <SAMeddpiccBuilder {...builderProps} />}
         </div>
 
         {/* Bottom pill bar */}

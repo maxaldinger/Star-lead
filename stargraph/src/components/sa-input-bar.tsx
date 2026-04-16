@@ -14,6 +14,7 @@ export type Tool =
   | 'proposal'
   | 'fit'
   | 'deck'
+  | 'meddpicc'
   | 'general'
 
 export type Tone =
@@ -45,6 +46,7 @@ const TOOLS: { id: Tool; label: string; color: string }[] = [
   { id: 'threading', label: 'Threading', color: '#8B5CF6' },
   { id: 'proposal', label: 'Proposal', color: '#EC4899' },
   { id: 'deck', label: 'Deck', color: '#7C3AED' },
+  { id: 'meddpicc', label: 'MEDDPICC', color: '#F59E0B' },
 ]
 
 const TONE_OPTIONS = [

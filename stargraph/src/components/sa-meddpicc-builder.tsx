@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Target, Sparkles, RefreshCw, Copy, Check, ChevronDown, ChevronUp, Zap } from 'lucide-react'
+import { Target, Sparkles, RefreshCw, Copy, Check, ChevronDown, ChevronUp } from 'lucide-react'
 import FollowUpChat from './sa-follow-up-chat'
 
 /* ── Types ──────────────────────────────────────────────── */
@@ -54,7 +54,6 @@ export default function SaMeddpiccBuilder({ dealName }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
-  const [showAiPanel, setShowAiPanel] = useState(false)
   const [hasGenerated, setHasGenerated] = useState(false)
 
   /* ── Update a single field ── */
@@ -84,13 +83,12 @@ export default function SaMeddpiccBuilder({ dealName }: Props) {
           if (!match) return field
           return {
             ...field,
-            status: (['strong', 'weak', 'missing'].includes(match.status) ? match.status : 'unknown') as Status,
+            status: (['strong', 'weak', 'missing', 'unknown'].includes(match.status) ? match.status : 'unknown') as Status,
             evidence: match.evidence || '',
             gap: match.gap || '',
           }
         }))
         setHasGenerated(true)
-        setShowAiPanel(false)
       }
     } catch (e: any) {
       setError(e.message)
@@ -140,58 +138,46 @@ export default function SaMeddpiccBuilder({ dealName }: Props) {
       <div>
         <h2 className="text-xl font-bold text-white mb-1">MEDDPICC Scorecard</h2>
         <p className="text-sm text-slate-400">
-          Qualify your deal by filling in each MEDDPICC dimension. Use AI Assist to auto-fill from call notes, then refine.
+          Paste meeting notes below and hit Analyze — only the topics you actually discussed get filled in. Edit or add to any field after.
         </p>
       </div>
 
-      {/* Account name + actions */}
-      <div className="flex items-center gap-3">
-        <input
-          type="text"
-          value={account}
-          onChange={e => setAccount(e.target.value)}
-          placeholder="Account name (e.g. JPMorgan Chase)"
-          className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 text-sm"
-        />
-        <button
-          onClick={() => setShowAiPanel(!showAiPanel)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sherpa text-white font-medium text-sm hover:bg-[#005068] transition-all"
-        >
-          <Zap className="w-4 h-4" />
-          AI Assist
-        </button>
-        <button
-          onClick={copyScorecard}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-sm hover:bg-white/10 transition-all"
-        >
-          {copied ? <><Check className="w-3.5 h-3.5" /> Copied</> : <><Copy className="w-3.5 h-3.5" /> Copy</>}
-        </button>
-      </div>
-
-      {/* AI Assist panel */}
-      {showAiPanel && (
-        <div className="p-4 rounded-xl bg-white/[0.03] border border-sherpa/30 space-y-3">
-          <p className="text-xs text-slate-400">Paste call notes, meeting transcripts, or email threads. AI will analyze and fill the scorecard.</p>
-          <textarea
-            value={notesForAi}
-            onChange={e => setNotesForAi(e.target.value)}
-            placeholder="Paste raw call notes here..."
-            rows={6}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 text-sm resize-none leading-relaxed"
+      {/* Notes input — always visible */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <input
+            type="text"
+            value={account}
+            onChange={e => setAccount(e.target.value)}
+            placeholder="Account name (e.g. JPMorgan Chase)"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 text-sm"
           />
           <button
-            onClick={runAiAnalysis}
-            disabled={loading || !notesForAi.trim()}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sherpa text-white font-medium text-sm hover:bg-[#005068] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={copyScorecard}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-sm hover:bg-white/10 transition-all"
           >
-            {loading ? (
-              <><RefreshCw className="w-4 h-4 animate-spin" /> Analyzing...</>
-            ) : (
-              <><Sparkles className="w-4 h-4" /> Analyze &amp; Fill Scorecard</>
-            )}
+            {copied ? <><Check className="w-3.5 h-3.5" /> Copied</> : <><Copy className="w-3.5 h-3.5" /> Copy</>}
           </button>
         </div>
-      )}
+        <textarea
+          value={notesForAi}
+          onChange={e => setNotesForAi(e.target.value)}
+          placeholder="Paste meeting notes, call transcripts, or email threads here. AI will only fill in the MEDDPICC fields that were actually discussed..."
+          rows={6}
+          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 text-sm resize-none leading-relaxed"
+        />
+        <button
+          onClick={runAiAnalysis}
+          disabled={loading || !notesForAi.trim()}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sherpa text-white font-medium text-sm hover:bg-[#005068] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <><RefreshCw className="w-4 h-4 animate-spin" /> Analyzing Notes...</>
+          ) : (
+            <><Sparkles className="w-4 h-4" /> Analyze &amp; Fill Scorecard</>
+          )}
+        </button>
+      </div>
 
       {error && (
         <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-300 text-sm">{error}</div>

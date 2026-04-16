@@ -41,7 +41,8 @@ Below are raw call notes, meeting transcripts, or email threads from this deal. 
 }
 
 Rules:
-- "strong" = clear evidence in the notes. "weak" = partially addressed. "missing" = not mentioned at all.
+- "strong" = clear, specific evidence in the notes. "weak" = partially addressed or vague. "unknown" = not mentioned or discussed at all.
+- CRITICAL: If a MEDDPICC dimension was NOT discussed or mentioned in the notes, set its status to "unknown" and leave evidence and gap as empty strings. Do NOT guess or fabricate evidence for topics that weren't covered. Only fill in fields where the notes provide real signal.
 - Include 3-5 threading recommendations.
 - Include 4-6 next steps, ordered by priority.
 - Be specific to what's in the notes. Don't be generic.
